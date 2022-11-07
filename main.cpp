@@ -1,62 +1,53 @@
 #include <stdio.h>
-#include <iostream>
-#include <list>
+#include <stdlib.h>
+
+typedef struct cell{
+	int val;
+	struct cell* next;
+} CELL;
+
+void create(CELL *firstCell, int insertVal){
+	//新規作成するセル
+	CELL* cell;
+	//新規作成するセル分のメモリを確保
+	cell = (CELL*)malloc(sizeof(CELL));
+
+	cell->val = insertVal;
+	cell->next = nullptr;
+
+	while (firstCell->next != nullptr) {
+		firstCell = firstCell->next;
+	}
+
+	firstCell = cell;
+
+};
+
+void index(CELL *firstCell) {
+	while (firstCell->next != nullptr) {
+		firstCell = firstCell->next;
+		printf("%d\n", firstCell->val);
+	}
+};
 
 int main()
 {
-	//山手線駅名一覧(1970年)
-	std::list<const char*> yamanoteStaition{
-		"Tokyo","Yurakucho","Shimbashi","Hamamatsucho","Tamachi","Shinagawa",
-		"Osaki","Gotanda","Meguro","Ebisu","Shibuya","Harajuku","Yoyogi",
-		"Shinjuku","Shin-Okubo","Takadanobaba","Mejiro","Ikebukuro","Otsuka",
-		"Sugamo","Komagome","Tabata","Nippori","Uguisudani","Ueno",
-		"Okachimachi","Akihabara","Kanda"
-	};
+	int val;
+	int count = 0;
 
-	//1970年の山手線駅名一覧を表示
-	printf("1970年\n");
-	printf("\n");
-	for (auto itr = yamanoteStaition.begin(); itr != yamanoteStaition.end(); ++itr)
-	{
-		std::cout << *itr << "\n";
-	}
-	printf("\n");
+	CELL head;
+	head.next = nullptr;
 
-	//日暮里の前に西日暮里を追加
-	for (std::list<const char*>::iterator itr = yamanoteStaition.begin(); itr != yamanoteStaition.end(); ++itr)
-	{
-		if (*itr == "Nippori")
-		{
-			itr = yamanoteStaition.insert(itr, "Nishi-Nippori");
-			++itr;
-		}
-	}
+	while (count < 5) {
+		scanf_s("%d", &val);
 
-	//2019年の山手線駅名一覧を表示
-	printf("2019年\n");
-	printf("\n");
-	for (auto itr = yamanoteStaition.begin(); itr != yamanoteStaition.end(); ++itr)
-	{
-		std::cout << *itr << "\n";
-	}
-	printf("\n");
+		//最後尾にセルを追加
+		create(&head, val);
 
-	//品川の前に高輪ゲートウェイを追加
-	for (std::list<const char*>::iterator itr = yamanoteStaition.begin(); itr != yamanoteStaition.end(); ++itr)
-	{
-		if (*itr == "Shinagawa")
-		{
-			itr = yamanoteStaition.insert(itr, "Takanawa-Gateway");
-			++itr;
-		}
-	}
+		//リスト一覧の表示
+		index(&head);
 
-	//2022年の山手線駅名一覧を表示
-	printf("2022年\n");
-	printf("\n");
-	for (auto itr = yamanoteStaition.begin(); itr != yamanoteStaition.end(); ++itr)
-	{
-		std::cout << *itr << "\n";
+		count++;
 	}
 
 	return 0;
