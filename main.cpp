@@ -1,53 +1,59 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <Windows.h>
+#include <functional>
 
-typedef struct cell{
-	int val;
-	struct cell* next;
-} CELL;
-
-void create(CELL *firstCell, int insertVal){
-	//新規作成するセル
-	CELL* cell;
-	//新規作成するセル分のメモリを確保
-	cell = (CELL*)malloc(sizeof(CELL));
-
-	cell->val = insertVal;
-	cell->next = nullptr;
-
-	while (firstCell->next != nullptr) {
-		firstCell = firstCell->next;
-	}
-
-	firstCell = cell;
-
-};
-
-void index(CELL *firstCell) {
-	while (firstCell->next != nullptr) {
-		firstCell = firstCell->next;
-		printf("%d\n", firstCell->val);
-	}
-};
-
-int main()
+int main(int argc, const char* argv[])
 {
-	int val;
-	int count = 0;
+	//サイコロの目をランダムに決める
+	srand(time(nullptr));
+	int diceNum = rand() % 6 + 1;
 
-	CELL head;
-	head.next = nullptr;
+	//半か丁かを入力
+	int number = 0;
+	printf("半か丁かを入力\n1...半 2...丁\n");
+	scanf_s("%d", &number);
 
-	while (count < 5) {
-		scanf_s("%d", &val);
+	//自分の回答を表示
+	if (number == 1) {
+		printf("回答:半\n");
+	}
+	else if (number == 2) {
+		printf("回答:丁\n");
+	}
+	else {
+		printf("回答:なし\n");
+	}
 
-		//最後尾にセルを追加
-		create(&head, val);
+	//数秒間待つ
+	printf("正解は...\n");
 
-		//リスト一覧の表示
-		index(&head);
+	//ラムダ式
+	std::function<int(int)> fx = [=](int s) {
+		//数秒待つ
+		Sleep(s * 1000);
 
-		count++;
+		//結果を表示
+		printf("%d! ", diceNum);
+		if (diceNum % 2 == 0) {
+			printf("丁!\n");
+		}
+		else {
+			printf("半!\n");
+		}
+
+		return 0;
+	};
+
+	fx(3);
+
+	//勝敗判定
+	if (number % 2 == diceNum % 2) {
+		printf("成功\n");
+	}
+	else {
+		printf("失敗\n");
 	}
 
 	return 0;
