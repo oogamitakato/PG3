@@ -11,11 +11,13 @@ typedef struct cell{
 } CELL;
 
 void create(CELL* currentCell, int val);
+void deleteCell(CELL* currentCell);
 void index(CELL* firstCell);
 CELL* getInsertListAddress(CELL *endCELL, int iteretor);
 
 int main()
 {
+	int operation;
 	int iteretor;
 	int inputValue;
 	CELL* insertCell;
@@ -25,22 +27,43 @@ int main()
 	head.prev = nullptr;
 
 	while (true) {
-		printf("何番目のセルの後ろに挿入しますか\n");
-		scanf_s("%d", &iteretor);
+		printf("[要素の操作]\n");
+		printf("1.挿入 2.削除");
+		scanf_s("%d", &operation);
 
-		printf("挿入する値を入力してください\n");
-		scanf_s("%d", &inputValue);
-	
-		printf("\n");
+		if (operation == 1) {
+			printf("何番目のセルの後ろに挿入しますか\n");
+			scanf_s("%d", &iteretor);
 
-		//任意のセルの後ろに追加
-		insertCell = getInsertListAddress(&head, iteretor);
-		create(insertCell, inputValue);
+			printf("挿入する値を入力してください\n");
+			scanf_s("%d", &inputValue);
 
-		//リスト一覧の表示
-		printf("リスト一覧\n");
-		index(&head);
-		printf("\n");
+			printf("\n");
+
+			//任意のセルの後ろに追加
+			insertCell = getInsertListAddress(&head, iteretor);
+			create(insertCell, inputValue);
+
+			//リスト一覧の表示
+			printf("リスト一覧\n");
+			index(&head);
+			printf("\n");
+		}
+		else if (operation == 2) {
+			printf("何番目のセルの後ろに挿入しますか\n");
+			scanf_s("%d", &iteretor);
+
+			printf("\n");
+			insertCell = getInsertListAddress(&head, iteretor);
+			deleteCell(insertCell);
+
+			//リスト一覧の表示
+			printf("リスト一覧\n");
+			//index(&head);
+			printf("\n");
+		}
+
+
 	}
 
 	return 0;
@@ -63,6 +86,10 @@ void create(CELL* currentCell, int val) {
 	currentCell->next = newCell;
 
 };
+
+void deleteCell(CELL* currentCell) {
+	
+}
 
 void index(CELL* endCell) {
 	int no = 1;
