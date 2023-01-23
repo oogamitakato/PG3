@@ -1,115 +1,123 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "DxLib.h"
+#include "SceneManager.h"
 
-const int wordCount = 16;
+// ウィンドウのタイトルに表示する文字列
+const char TITLE[] = "xx2x_xx_ナマエ: タイトル";
 
-typedef struct cell{
-	int val;
-	struct cell* prev;
-	struct cell* next;
-} CELL;
+// ウィンドウ横幅
+const int WIN_WIDTH = 600;
 
-void create(CELL* currentCell, int val);
-void deleteCell(CELL* currentCell);
-void index(CELL* firstCell);
-CELL* getInsertListAddress(CELL *endCELL, int iteretor);
+// ウィンドウ縦幅
+const int WIN_HEIGHT = 400;
 
-int main()
-{
-	int operation;
-	int iteretor;
-	int inputValue;
-	CELL* insertCell;
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine,
+	_In_ int nCmdShow) {
+	// ウィンドウモードに設定
+	ChangeWindowMode(TRUE);
 
-	CELL head;
-	head.next = nullptr;
-	head.prev = nullptr;
+	// ウィンドウサイズを手動では変更させず、
+	// かつウィンドウサイズに合わせて拡大できないようにする
+	SetWindowSizeChangeEnableFlag(FALSE, FALSE);
 
+	// タイトルを変更
+	SetMainWindowText(TITLE);
+
+	// 画面サイズの最大サイズ、カラービット数を設定(モニターの解像度に合わせる)
+	SetGraphMode(WIN_WIDTH, WIN_HEIGHT, 32);
+
+	// 画面サイズを設定(解像度との比率で設定)
+	SetWindowSizeExtendRate(1.0);
+
+	// 画面の背景色を設定する
+	SetBackgroundColor(0x00, 0x00, 0x00);
+
+	// DXlibの初期化
+	if (DxLib_Init() == -1) { return -1; }
+
+	// (ダブルバッファ)描画先グラフィック領域は裏面を指定
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	// 画像などのリソースデータの変数宣言と読み込み
+
+
+	// ゲームループで使う変数の宣言
+	SceneManager* sceneManager = SceneManager::GetInstance();
+	//sceneManager->GetInstance();
+
+	int sceneNo = 0;
+
+	// 最新のキーボード情報用
+	char keys[256] = { 0 };
+
+	// 1ループ(フレーム)前のキーボード情報
+	char oldkeys[256] = { 0 };
+
+	// ゲームループ
 	while (true) {
-		printf("[要素の操作]\n");
-		printf("1.挿入 2.削除");
-		scanf_s("%d", &operation);
-
-		if (operation == 1) {
-			printf("何番目のセルの後ろに挿入しますか\n");
-			scanf_s("%d", &iteretor);
-
-			printf("挿入する値を入力してください\n");
-			scanf_s("%d", &inputValue);
-
-			printf("\n");
-
-			//任意のセルの後ろに追加
-			insertCell = getInsertListAddress(&head, iteretor);
-			create(insertCell, inputValue);
-
-			//リスト一覧の表示
-			printf("リスト一覧\n");
-			index(&head);
-			printf("\n");
-		}
-		else if (operation == 2) {
-			printf("何番目のセルの後ろに挿入しますか\n");
-			scanf_s("%d", &iteretor);
-
-			printf("\n");
-			insertCell = getInsertListAddress(&head, iteretor);
-			deleteCell(insertCell);
-
-			//リスト一覧の表示
-			printf("リスト一覧\n");
-			//index(&head);
-			printf("\n");
+		// 最新のキーボード情報だったものは1フレーム前のキーボード情報として保存
+		for (int i = 0; i < 256; i++)
+		{
+			oldkeys[i] = keys[i];
 		}
 
+		// 最新のキーボード情報を取得
+		GetHitKeyStateAll(keys);
 
-	}
+		// 画面クリア
+		ClearDrawScreen();
+		//---------  ここからプログラムを記述  ----------//
 
-	return 0;
-}
+		// 更新処理
+		if (keys[KEY_INPUT_SPACE] == 1 && oldkeys[KEY_INPUT_SPACE] == 0) {
 
-void create(CELL* currentCell, int val) {
-	//新規作成するセル
-	CELL* newCell;
-	//新規作成するセル分のメモリを確保
-	newCell = (CELL*)malloc(sizeof(CELL));
-	newCell->val = val;
-	newCell->prev = currentCell;
-	newCell->next = currentCell->next;
-
-	if (currentCell->next) {
-		CELL *nextCell = currentCell->next;
-		nextCell->prev = newCell;
-	}
-
-	currentCell->next = newCell;
-
-};
-
-void deleteCell(CELL* currentCell) {
-	
-}
-
-void index(CELL* endCell) {
-	int no = 1;
-	while (endCell->next != nullptr) {
-		endCell = endCell->next;
-		printf("%d : ", no);
-		printf("%d\n", endCell->val);
-
-		no++;
-	}
-};
-
-CELL* getInsertListAddress(CELL* endCELL, int iteretor) {
-	for (int i = 0; i < iteretor; i++) {
-		if (endCELL->next) {
-			endCELL = endCELL->next;
+			if (sceneManager->GetScene() == 0) {
+				sceneManager->ChangeScene(1);
+			}
+			else if (sceneManager->GetScene() == 1) {
+				sceneManager->ChangeScene(2);
+			}
+			else if (sceneManager->GetScene() == 2) {
+				sceneManager->ChangeScene(3);
+			}
+			else if (sceneManager->GetScene() == 3) {
+				sceneManager->ChangeScene(0);
+			}
 		}
-		else {
+
+		// 描画処理
+		if (sceneManager->GetScene() == 0) {
+			DrawFormatString(200, 200, GetColor(255, 255, 255), "GameScene : Title");
+		}
+		else if (sceneManager->GetScene() == 1) {
+			DrawFormatString(200, 200, GetColor(255, 255, 255), "GameScene : NewGame");
+		}
+		else if (sceneManager->GetScene() == 2) {
+			DrawFormatString(200, 200, GetColor(255, 255, 255), "GameScene : GamePlay");
+		}
+		else if (sceneManager->GetScene() == 3) {
+			DrawFormatString(200, 200, GetColor(255, 255, 255), "GameScene : GameClear");
+		}
+
+		//---------  ここまでにプログラムを記述  ---------//
+		// (ダブルバッファ)裏面
+		ScreenFlip();
+
+		// 20ミリ秒待機(疑似60FPS)
+		WaitTimer(20);
+
+		// Windowsシステムからくる情報を処理する
+		if (ProcessMessage() == -1) {
+			break;
+		}
+
+		// ESCキーが押されたらループから抜ける
+		if (CheckHitKey(KEY_INPUT_ESCAPE) == 1) {
 			break;
 		}
 	}
-	return endCELL;
+	// Dxライブラリ終了処理
+	DxLib_End();
+
+	// 正常終了
+	return 0;
 }
