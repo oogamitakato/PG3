@@ -47,11 +47,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SceneManager* sceneManager = SceneManager::GetInstance();
 	//sceneManager->GetInstance();
 
-	Enemy* enemy1 = nullptr;
-	Enemy* enemy2 = nullptr;
-	Enemy* enemy3 = nullptr;
-
-	int sceneNo = 0;
+	Enemy* enemy_ = nullptr;
+	
+	int enemyState = 0;
 
 	// 最新のキーボード情報用
 	char keys[256] = { 0 };
@@ -75,16 +73,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//---------  ここからプログラムを記述  ----------//
 
 		// 更新処理
-		if (keys[KEY_INPUT_SPACE]) {
-			Enemy::isAlive = 0;
+		if (keys[KEY_INPUT_SPACE] == 1 && oldkeys[KEY_INPUT_SPACE] == 0) {
+			if (enemyState < 2) {
+				enemyState++;
+			}
+			else {
+				enemyState = 0;
+			}
 		}
 
 		// 描画処理
-		enemy1->Draw(100, 200);
-		enemy2->Draw(300, 200);
-		enemy3->Draw(500, 200);
-
-		DrawFormatString(0, 0, GetColor(255, 255, 255), "SPACEで敵を倒す");
+		enemy_->Draw(enemyState);
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面

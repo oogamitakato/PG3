@@ -8,6 +8,12 @@ public:
 
 	void Update();
 
-	void Draw(int x, int y);
-};
+	void Draw(int eState);
 
+	void Proximity();
+	void Shooting();
+	void Secession();
+
+private:
+	static void (Enemy::* enemyState[])();
+};
