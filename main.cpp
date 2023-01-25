@@ -1,5 +1,6 @@
 #include "DxLib.h"
 #include "SceneManager.h"
+#include "Enemy.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "xx2x_xx_ナマエ: タイトル";
@@ -9,6 +10,8 @@ const int WIN_WIDTH = 600;
 
 // ウィンドウ縦幅
 const int WIN_HEIGHT = 400;
+
+int Enemy::isAlive = 1;
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine,
 	_In_ int nCmdShow) {
@@ -44,6 +47,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SceneManager* sceneManager = SceneManager::GetInstance();
 	//sceneManager->GetInstance();
 
+	Enemy* enemy1 = nullptr;
+	Enemy* enemy2 = nullptr;
+	Enemy* enemy3 = nullptr;
+
 	int sceneNo = 0;
 
 	// 最新のキーボード情報用
@@ -68,35 +75,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//---------  ここからプログラムを記述  ----------//
 
 		// 更新処理
-		if (keys[KEY_INPUT_SPACE] == 1 && oldkeys[KEY_INPUT_SPACE] == 0) {
-
-			if (sceneManager->GetScene() == 0) {
-				sceneManager->ChangeScene(1);
-			}
-			else if (sceneManager->GetScene() == 1) {
-				sceneManager->ChangeScene(2);
-			}
-			else if (sceneManager->GetScene() == 2) {
-				sceneManager->ChangeScene(3);
-			}
-			else if (sceneManager->GetScene() == 3) {
-				sceneManager->ChangeScene(0);
-			}
+		if (keys[KEY_INPUT_SPACE]) {
+			Enemy::isAlive = 0;
 		}
 
 		// 描画処理
-		if (sceneManager->GetScene() == 0) {
-			DrawFormatString(200, 200, GetColor(255, 255, 255), "GameScene : Title");
-		}
-		else if (sceneManager->GetScene() == 1) {
-			DrawFormatString(200, 200, GetColor(255, 255, 255), "GameScene : NewGame");
-		}
-		else if (sceneManager->GetScene() == 2) {
-			DrawFormatString(200, 200, GetColor(255, 255, 255), "GameScene : GamePlay");
-		}
-		else if (sceneManager->GetScene() == 3) {
-			DrawFormatString(200, 200, GetColor(255, 255, 255), "GameScene : GameClear");
-		}
+		enemy1->Draw(100, 200);
+		enemy2->Draw(300, 200);
+		enemy3->Draw(500, 200);
+
+		DrawFormatString(0, 0, GetColor(255, 255, 255), "SPACEで敵を倒す");
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
